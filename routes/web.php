@@ -16,8 +16,16 @@ Route::get('/', function () {
 });
 
 Route::get('user/{id}', 'UserController@show');
+Route::get('rela-test','FunctionalityTestingController@index');
+Route::get('rela-iframe-test','FunctionalityTestingController@i_frame');
+
+Route::post('attribute/map','AttributeController@map');
+Route::post('ait/photos','AitController@getPhotos');
+
 
 Route::resource('partner','PartnerController');
 Route::resource('entity','EntityController');
 Route::resource('attribute','AttributeController');
 Route::resource('photo_up_standard','PhotoUpStandardFieldController');
+Route::resource('endpoint','EndpointController');
+Route::resource('ait','AitController');

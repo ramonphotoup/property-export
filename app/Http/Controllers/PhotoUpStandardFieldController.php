@@ -19,11 +19,9 @@ class PhotoUpStandardFieldController extends ParentController
     }
 
     public function index(Request $request){
-        //$this->curl_test();die;
+
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' List';
-
-        $this->view_param['photo_up_standard_fields'] = PhotoUpStandardField::all();
-
+        $this->view_param['photo_up_standard_fields'] = PhotoUpStandardField::orderBy("table")->orderBy("id")->get();
         return $this->render($this->controller . '.list');
     }
 
@@ -39,13 +37,17 @@ class PhotoUpStandardFieldController extends ParentController
     public function store(Request $request){
 
         $photo_up_standard = new PhotoUpStandardField();
-        $photo_up_standard->table = $request->table;
-        $photo_up_standard->name = $request->name;
-        $photo_up_standard->data_types_id = $request->data_types_id;
 
-        $photo_up_standard->save();
+        if(isset($_FILES['attributes']['tmp_name']) === true && trim($_FILES['attributes']['tmp_name']) !== ''){
+            $data = json_decode(file_get_contents($_FILES['attributes']['tmp_name']));
+            $photo_up_standard->batch_insert($data);
+        }else{
+            $photo_up_standard->sp_photo_up_standard_field_create($request->table, $request->name, '', $request->data_types_id);
+        }
 
         $this->set_alert_message('success',$this->view_param['page_title'] . ' Successfully Saved...',true);
+
+
         return redirect()->route($this->controller . '.index');
     }
 
@@ -81,16 +83,6 @@ class PhotoUpStandardFieldController extends ParentController
         $this->set_alert_message('success',$this->view_param['page_title'] . ' Successfully Saved...',true);
 
         return redirect()->route($this->controller . '.index');
-    }
-
-    private function get_data_types(){
-        $data_types = array();
-        foreach(DataTypes::all()->sortBy('name') as $data_type){
-            if(trim($data_type->name) !== ''){
-                $data_types[$data_type->id] = $data_type->name;
-            }
-        }
-        return $data_types;
     }
 
 }

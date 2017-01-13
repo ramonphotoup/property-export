@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Partner;
 use App\Models\Entity;
+use App\Models\RelaWrapper;
 use Symfony\Component\HttpKernel\Tests\Exception\AccessDeniedHttpExceptionTest;
 use Session;
 
@@ -13,12 +14,17 @@ class EntityController extends ParentController
 
     public function __construct(){
         parent::__construct();
+
+
+
         $this->controller = 'entity';
         $this->view_param['page_title'] = 'Entity';
     }
 
     public function index(Request $request){
-        //$this->curl_test();die;
+
+        //$this->curl_test_update();die;
+
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' List';
 
         $entity = new Entity();
@@ -77,17 +83,6 @@ class EntityController extends ParentController
         return redirect()->route($this->controller . '.index');
     }
 
-    /**
-     * @return array
-     */
-    private function get_partners(){
-        $partners = array();
-        foreach(Partner::all() as $index => $value){
-            $partners[$value->id] = $value->name;
-        }
-        return $partners;
-    }
-
     private function curl_test(){
 
         $uid = 11031;
@@ -108,6 +103,54 @@ class EntityController extends ParentController
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($vars));  //Post Fields
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        //for expired SSL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $headers = [
+            'content-type: application/json',
+            'API-KEY: 9cJTnJyCCUtEoMZaixpC-8g4hL1_9I6W9qKh251_PZo',
+            'TOKEN: TzQ_Yzy2I3Y3mMWr79s58hRWunhqVJZbUNKC2JQctsY'
+        ];
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $server_output = curl_exec ($ch);
+
+        curl_close ($ch);
+
+        //{"uri":"https://www.reladevel.com/relaautologin/52b3d46c459abe8039b1b4505cbb621bdd9d6d3cde099d4164fde61c91d59345","nid":"178346"}
+
+        print  $server_output ;
+    }
+
+
+    private function curl_test_update(){
+
+        $uid = 11031;
+        $nid = 178346;
+        $unique_id = uniqid();
+        $vars = [
+            'uid' => $uid,
+            'title' => 'title_'.$unique_id,
+            'street' => 'street_'.$unique_id,
+            'city' => 'Manhattan',
+            'state' => 'NY',
+            'zip' => '10011',
+            'country' => 'US',
+            'object' => 'property',
+            'description' => 'this is a test update'
+        ];
+
+        $ch = curl_init("https://www.reladevel.com/api/v1/object/property/{$nid}"); //'https://www.relahq.com/api/v1/object/property/1234'
+        //curl_setopt($ch, CURLOPT_URL,"https://www.reladevel.com/api/v1/object/property/{$nid}");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($vars));  //Post Fields
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        //for expired SSL
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 

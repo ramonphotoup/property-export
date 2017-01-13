@@ -26,6 +26,20 @@
         @endforeach
         </tbody>
     </table>
+
+    {!! Form::open(['route' => $controller . '.store','enctype'=>"multipart/form-data", 'class'=>"form-inline"]) !!}
+
+    <div class="form-group">
+        <label for="">Json-Data</label>
+        {!! Form::file('attributes', null, ['class'=>'form-control']) !!}
+    </div>
+
+
+
+    {!! Form::submit('Save',['class' => "btn btn-primary"]) !!}
+
+    {!! Form::close() !!}
+
     {!! Form::open([
         'method' => 'delete',
         'route' => [$controller . '.destroy',1],

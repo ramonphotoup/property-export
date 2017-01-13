@@ -40,7 +40,7 @@ INNER JOIN `schema` ON `schema`.`id` = attributes.schema_id
 INNER JOIN entities ON entities.id = `schema`.`entities_id`
 INNER JOIN partners ON partners.id = entities.partners_id
 
-WHERE attributes.id = 83
+WHERE `schema`.`id` = 3
 
 ORDER BY partners.id, entities.id, `schema`.`id`, attributes.id
 

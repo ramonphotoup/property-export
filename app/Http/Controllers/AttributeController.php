@@ -8,6 +8,7 @@ use App\Models\Partner;
 use App\Models\Entity;
 use App\Models\Attribute;
 use App\Models\Schema;
+use App\Models\PhotoUpStandardField;
 use Symfony\Component\HttpKernel\Tests\Exception\AccessDeniedHttpExceptionTest;
 use Session;
 
@@ -24,10 +25,10 @@ class AttributeController extends ParentController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
+
+
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' List';
         $schema = new Schema();
-
-        //$this->p($schema->get_schema(),1);
 
         $this->view_param['schema'] = $schema->get_schema();
 
@@ -38,22 +39,12 @@ class AttributeController extends ParentController
 
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' Create';
 
-        $this->view_param['entities'] = $this->get_group_entities();
-
+        $this->view_param['entities'] = $this->get_group_entities_options();
 
         return $this->render($this->controller . '.create');
     }
 
     public function store(Request $request){
-        //$this->p(json_decode(''));
-
-        $data = json_decode(file_get_contents($_FILES['attributes']['tmp_name']));
-
-
-
-        //$this->p($data[0]->Description);
-
-        //die;
 
         $schema = new Schema();
 
@@ -76,7 +67,10 @@ class AttributeController extends ParentController
     }
 
     public function destroy(Request $request){
-        ///Entity::destroy($request->id);
+
+        $schema = new Schema();
+        $schema->delete_schema_n_dependencies($request->id);
+
         $this->set_alert_message('success',$this->view_param['page_title'] . ' Successfully Deleted...',true);
         return redirect()->route($this->controller . '.index');
     }
@@ -85,12 +79,15 @@ class AttributeController extends ParentController
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' Edit';
         $this->view_param['schema'] = Schema::find($id);
 
-        $this->view_param['entities'] = $this->get_group_entities();
+        $this->view_param['entities'] = $this->get_group_entities_options();
+
+        $this->view_param['standard_fields'] = $this->get_standard_field_options();
 
         $attribute = new Attribute();
 
         if(isset($this->view_param['schema']->id)){
             $this->view_param['attributes'] = $attribute->get_attribute_detail($this->view_param['schema']->id);
+            //$this->p($this->view_param['attributes'],1);
         }
 
         return $this->render($this->controller.'.edit');
@@ -113,19 +110,16 @@ class AttributeController extends ParentController
         return redirect()->route($this->controller . '.index');
     }
 
-    /**
-     * @return array
-     */
-    private function get_group_entities(){
-        $entity = new Entity();
-        $group_entities = array();
-        foreach($entity->getEntities() as $index => $value){
-            if(isset($group_entities[$value->partner]) === false){
-                $group_entities[$value->partner] = array();
-            }
+    public function map(Request $request){
 
-            $group_entities[$value->partner][$value->id] = $value->entity;
-        }
-        return $group_entities;
+        $attribute = Attribute::find($request->attributes_id);
+
+        $attribute->photoup_standard_fields_id = $request->field_id;
+
+        $attribute->save();
+
+        return json_encode(array('message'=>'Success'));
+        //return json_encode(array('message'=>'Error'));
     }
+
 }

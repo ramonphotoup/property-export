@@ -1,6 +1,6 @@
 @extends('common.layout')
 @section('title')
-    Parrner
+    Partner
 @stop
 
 @section('content')

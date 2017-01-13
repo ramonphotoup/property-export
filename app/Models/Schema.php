@@ -25,4 +25,17 @@ class Schema extends MyParent
             "
         );
     }
+
+    public function delete_schema_n_dependencies($schema_id){
+
+        $param = array('schema_id'=>$schema_id);
+
+        $sql = "CALL sp_attribute_delete(
+            :schema_id,
+            @message,
+            @return_id
+        )";
+
+        $this->exec($sql, $param, true);
+    }
 }

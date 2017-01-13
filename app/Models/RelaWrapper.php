@@ -35,45 +35,6 @@ class RelaWrapper
             'API-KEY: ' . $this->api_key,
             'TOKEN: ' . $this->token
         ];
-
-        /*$uid = 11031;
-        $unique_id = uniqid();
-        $vars = [
-            'uid' => $uid,
-            'title' => 'title_'.$unique_id,
-            'street' => 'street_'.$unique_id,
-            'city' => 'Manhattan',
-            'state' => 'NY',
-            'zip' => '10011',
-            'country' => 'US',
-            'object' => 'property'
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,"https://www.reladevel.com/api/v1/object/property");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($vars));  //Post Fields
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        //for expired SSL
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        $headers = [
-            'content-type: application/json',
-            'API-KEY: 9cJTnJyCCUtEoMZaixpC-8g4hL1_9I6W9qKh251_PZo',
-            'TOKEN: TzQ_Yzy2I3Y3mMWr79s58hRWunhqVJZbUNKC2JQctsY'
-        ];
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $server_output = curl_exec ($ch);
-
-        curl_close ($ch);
-
-        //{"uri":"https://www.reladevel.com/relaautologin/52b3d46c459abe8039b1b4505cbb621bdd9d6d3cde099d4164fde61c91d59345","property_nid":"178346"}
-
-        print  $server_output ;*/
     }
 
 

@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link rel="stylesheet" href="{{url('/css/bootstrap-4.0.0-alpha.5-dist/css/bootstrap.min.css')}}" />
-    <script type="text/javascript" src="{{url('/js/jquery-1.11.2.min.js')}}" ></script>
-    <script type="text/javascript" src="{{url('/js/bootstrap-4.0.0-alpha.5-dist/js/bootstrap.min.js')}}" ></script>
-    <title>App Name - @yield('title')</title>
+
+
+
+
 </head>
 <body>
 
@@ -31,15 +31,34 @@
             </li>
         </ul>
     </nav>
-    <div style="display: block; height: 20px;"></div>
-    @if($alert_type !== '')
-        <div class="alert alert-{{$alert_type}}">{{$alert_message}}</div>
-    @endif
-    <div class="alert js-alert" style="display: none">fasdf</div>
-    <div style="margin: 0 15px">
-        @yield('content')
-    </div>
+
+    {{--<div class="container">
+        <iframe src="https://www.relahq.com/demo/pipeline" style="border: none; width: inherit; height:500px; overflow-y: hidden; overflow-x: hidden" scrolling="no"></iframe>
+    </div>--}}
 
 </div>
+
+
+
+<script type="text/javascript">
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://api-tour-test.herokuapp.com/error.php", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            // WARNING! Might be injecting a malicious script!
+            //document.getElementById("resp").innerHTML = xhr.responseText;
+            alert(xhr.responseText);
+            //...
+        }
+    }
+    xhr.send();
+
+</script>
+
+
+
+
+
 </body>
 </html>

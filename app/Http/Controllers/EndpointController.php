@@ -21,16 +21,7 @@ class EndpointController extends ParentController
 
     public function index(Request $request){
 
-        $flickr = new FlickrWrapper();
-        //$res = $flickr->getPhotosByTags('inspection');
-        //$res = $flickr->getPhotoById('32126256356');
-        //$this->p($res,1);
 
-
-        return $this->render('ait.index');
-
-
-        die;
         $endpoint = new Endpoint();
         $this->view_param['inner_page_title'] = $this->view_param['page_title'] . ' List';
         $this->view_param['endpoints'] = $endpoint->get_endpoints();

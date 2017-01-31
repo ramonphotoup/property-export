@@ -19,14 +19,13 @@ class RelaWrapper
 
     private $methods = [
         'post' => 'POST',
-        'put' => 'PUT'
+        'put' => 'PUT',
+        'get' => 'GET'
     ];
 
     private $api_key = '9cJTnJyCCUtEoMZaixpC-8g4hL1_9I6W9qKh251_PZo';
     private $token = 'TzQ_Yzy2I3Y3mMWr79s58hRWunhqVJZbUNKC2JQctsY';
     private $endpoint_base_url = 'https://www.reladevel.com/';
-
-
 
     public function __construct(){
 
@@ -36,7 +35,6 @@ class RelaWrapper
             'TOKEN: ' . $this->token
         ];
     }
-
 
     public function push_data($index, $value = ''){
         if(is_array($index) === true && count($index) > 0){
@@ -52,7 +50,7 @@ class RelaWrapper
     }
 
     public function set_method($method){
-        if(in_array($method,array('post','put')) === false){
+        if(in_array($method,array('post','put','get')) === false){
             throw new InvalidArgumentException('Method must be put or post',500);
         }
         $this->method = $this->methods[$method];
@@ -89,7 +87,7 @@ class RelaWrapper
             throw new InvalidArgumentException("endpoints must be a none empty string(eg:URI)");
         }
 
-        $type = pathinfo($path, PATHINFO_EXTENSION);
+        //$type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         //return 'data:image/' . $type . ';base64,' . base64_encode($data);
         return base64_encode($data);
@@ -113,6 +111,20 @@ class RelaWrapper
         return $this->submit();
     }
 
+    public function get_properties($uid){
+        $this->endpoint = 'api/v1/object/properties/' . $uid;
+        $this->set_method('get');
+        return $this->submit();
+    }
+
+    public function auth($uid){
+        //http://www.reladevel.com/authorize/photographer/178256
+        $this->endpoint = "authorize/photographer/{$uid}";
+        $this->set_method('get');
+
+        return $this->submit();
+    }
+
     public function submit(){
 
         if(trim($this->endpoint) === ''){
@@ -121,10 +133,6 @@ class RelaWrapper
 
         if(trim($this->method) === ''){
             throw new InvalidArgumentException("method must be a none empty string");
-        }
-
-        if(is_array($this->data) === false || count($this->data) == 0){
-            throw new InvalidArgumentException("data must be a none empty array");
         }
 
         if(is_array($this->headers) === false || count($this->headers) == 0){
@@ -137,7 +145,11 @@ class RelaWrapper
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->method);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->json_data);  //Post Fields
+
+        if(is_array($this->data) === true || count($this->data) > 0){
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->data));  //Post Fields
+        }
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //for expired SSL
@@ -146,6 +158,8 @@ class RelaWrapper
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
 
         $this->result = curl_exec ($ch);
+
+        die($this->result);
 
         if(trim($this->result) === ''){
             throw new UnexpectedValueException('Empty result');
@@ -156,3 +170,5 @@ class RelaWrapper
         return $this->result;
     }
 }
+
+
